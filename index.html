@@ -1,1 +1,403 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Aniversário do Coisinho! 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- O CSS AQUI -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+  <!-- (Conteúdo do game-container aqui) -->
+
+  <!-- O JAVASCRIPT AQUI (no final do body) -->
+  <script src="script.js"></script>
+</body>
+</html>
+<link rel="stylesheet" href="styles.css">
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aniversário do Coisinho! 🎂</title>
+  <!-- Fonte no estilo Pixel/Retro -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Press Start 2P', monospace;
+      user-select: none;
+    }
+
+    body {
+      background-color: #1a102f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: #fff;
+    }
+
+    /* Container Principal do Jogo */
+    #game-container {
+      width: 800px;
+      height: 500px;
+      background-color: #2b1b40;
+      border: 4px solid #805ad5;
+      box-shadow: 0 0 20px rgba(128, 90, 213, 0.5);
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    /* --- TELA DE MENU --- */
+    #menu-screen {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #2d124d 0%, #150826 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+    }
+
+    h1.title {
+      color: #b794f4;
+      font-size: 22px;
+      text-shadow: 3px 3px 0px #44337a;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .btn-play {
+      background-color: #63b3ed;
+      color: #1a202c;
+      border: 4px solid #3182ce;
+      padding: 15px 40px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #2b6cb0;
+      transition: transform 0.1s;
+    }
+
+    .btn-play:hover {
+      background-color: #90cdf4;
+      transform: scale(1.05);
+    }
+
+    .btn-play:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #2b6cb0;
+    }
+
+    /* --- ÁREA DO JOGO (CENÁRIOS) --- */
+    .screen {
+      display: none;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Imagens de fundo aplicadas via HTML para respeitar os nomes informados */
+    .bg-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* Caixa de Diálogo / Missão */
+    .dialog-box {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      background: rgba(35, 25, 50, 0.9);
+      border: 3px solid #68d391;
+      padding: 12px;
+      font-size: 10px;
+      line-height: 1.6;
+      color: #e6fffa;
+      z-index: 10;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    /* Notificação de Conquista Pixel */
+    .achievement {
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: #2b6cb0;
+      border: 3px solid #90cdf4;
+      padding: 12px 16px;
+      font-size: 10px;
+      color: #ffffff;
+      z-index: 20;
+      border-radius: 4px;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+      animation: pop 0.4s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Personagens */
+    .avatar {
+      position: absolute;
+      height: 180px;
+      z-index: 5;
+      bottom: 40px;
+      transition: all 0.5s ease;
+    }
+
+    #coisinho-img {
+      left: 100px;
+    }
+
+    #eu-img {
+      right: 100px;
+    }
+
+    /* Itens Coletáveis na Padaria */
+    .item-grid {
+      position: absolute;
+      bottom: 60px;
+      right: 120px;
+      display: flex;
+      gap: 15px;
+      z-index: 6;
+    }
+
+    .item {
+      width: 45px;
+      height: 45px;
+      background: #feebc8;
+      border: 2px solid #dd6b20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #9b2c2c;
+    }
+
+    .item:hover {
+      transform: translateY(-3px);
+      background: #fbd38d;
+    }
+
+    /* Porta de Saída da Padaria */
+    #door {
+      position: absolute;
+      bottom: 40px;
+      left: 20px;
+      width: 60px;
+      height: 120px;
+      background: rgba(100, 255, 100, 0.3);
+      border: 2px dashed #68d391;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 8px;
+      color: #9ae6b4;
+      cursor: pointer;
+      z-index: 6;
+      text-align: center;
+    }
+
+    /* Bacia na Cozinha */
+    #bowl {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90px;
+      height: 60px;
+      background: #e2e8f0;
+      border: 4px solid #718096;
+      border-radius: 0 0 45px 45px;
+      cursor: pointer;
+      z-index: 6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+    }
+
+    /* Bolo Pronto */
+    #cake {
+      display: none;
+      position: absolute;
+      bottom: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 50px;
+      z-index: 7;
+      animation: bounce 0.6s infinite alternate;
+    }
+
+    @keyframes bounce {
+      from { transform: translateX(-50%) translateY(0); }
+      to { transform: translateX(-50%) translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+
+    <!-- 1. TELA DE MENU -->
+    <div id="menu-screen">
+      <h1 class="title">MINI GAME DE ANIVERSÁRIO<br><span style="color:#68d391; font-size: 14px;">EDITION: COISINHO</span></h1>
+      <button class="btn-play" onclick="startGame()">PLAY</button>
+    </div>
+
+    <!-- 2. FASE 1: PADARIA -->
+    <div id="bakery-screen" class="screen">
+      <!-- Imagem do Fundo da Padaria -->
+      <img src="padaria.png.jpng" alt="Fundo Padaria" class="bg-img">
+      
+      <div class="dialog-box">
+        MISSÃO: Roube os ingredientes do bolo! <br>
+        (Clique no Leite 🥛, Trigo 🌾, Ovo 🥚 e Manteiga 🧈, depois clique na SAÍDA!)
+      </div>
+
+      <!-- Avatar Coisinho -->
+      <img src="coisinho.png" alt="Coisinho" id="coisinho-img" class="avatar">
+
+      <!-- Itens na Padaria -->
+      <div class="item-grid">
+        <div class="item" id="item-leite" onclick="collectItem('leite', '🥛')">🥛</div>
+        <div class="item" id="item-trigo" onclick="collectItem('trigo', '🌾')">🌾</div>
+        <div class="item" id="item-ovo" onclick="collectItem('ovo', '🥚')">🥚</div>
+        <div class="item" id="item-manteiga" onclick="collectItem('manteiga', '🧈')">🧈</div>
+      </div>
+
+      <!-- Porta de Saída -->
+      <div id="door" onclick="exitBakery()">SAÍDA 🚪</div>
+    </div>
+
+    <!-- 3. FASE 2: COZINHA -->
+    <div id="kitchen-screen" class="screen">
+      <!-- Imagem do Fundo da Cozinha -->
+      <img src="cozinha.png.jpng" alt="Fundo Cozinha" class="bg-img">
+
+      <div class="dialog-box" id="kitchen-dialog">
+        Clique na bacia para misturar todos os ingredientes! 🥣
+      </div>
+
+      <!-- Avatar Coisinho na Cozinha -->
+      <img src="coisinho.png" alt="Coisinho" class="avatar" style="left: 150px;">
+
+      <!-- Bacia -->
+      <div id="bowl" onclick="mixCake()">🥣</div>
+      <div id="cake">🎂</div>
+    </div>
+
+    <!-- 4. FASE 3: FESTA / FINAL -->
+    <div id="party-screen" class="screen">
+      <!-- Imagem de Fundo (Reaproveitada a cozinha ou outro cenário) -->
+      <img src="cozinha.png.jpng" alt="Fundo Festa" class="bg-img">
+
+      <div class="dialog-box" style="border-color: #f6ad55; background: rgba(50, 20, 20, 0.95);">
+        🎉 Parabéns pra você, nesta data querida... 🎉<br><br>
+        <span style="color: #f6e05e; font-size: 14px;">FELIZ ANIVERSÁRIO COISINHO!</span>
+      </div>
+
+      <!-- Avatar Coisinho -->
+      <img src="coisinho.png" alt="Coisinho" class="avatar" style="left: 220px;">
+
+      <!-- Seu Avatar -->
+      <img src="eu.png.png" alt="Eu" id="eu-img" class="avatar" style="right: 220px;">
+    </div>
+
+    <!-- NOTIFICAÇÃO DE CONQUISTAS -->
+    <div id="achievement-box" class="achievement">
+      🏆 <b>CONQUISTA DESBLOQUEADA:</b><br>
+      <span id="achievement-text" style="color: #f6e05e; margin-top: 5px; display: block;"></span>
+    </div>
+
+  </div>
+
+  <script>
+    let collectedItems = [];
+
+    // Função para Iniciar o Jogo
+    function startGame() {
+      document.getElementById('menu-screen').style.display = 'none';
+      document.getElementById('bakery-screen').style.display = 'block';
+    }
+
+    // Coletar Ingredientes
+    function collectItem(itemName, symbol) {
+      if (!collectedItems.includes(itemName)) {
+        collectedItems.push(itemName);
+        document.getElementById(`item-${itemName}`).style.opacity = '0.3';
+        document.getElementById(`item-${itemName}`).style.pointerEvents = 'none';
+      }
+    }
+
+    // Tentar Sair da Padaria
+    function exitBakery() {
+      if (collectedItems.length === 4) {
+        showAchievement("assaltante de padaria");
+        
+        // Espera a conquista aparecer para mudar de fase
+        setTimeout(() => {
+          document.getElementById('bakery-screen').style.display = 'none';
+          document.getElementById('kitchen-screen').style.display = 'block';
+        }, 2500);
+      } else {
+        alert("Você ainda precisa pegar todos os ingredientes do bolo! (Leite, Trigo, Ovo e Manteiga)");
+      }
+    }
+
+    // Misturar o Bolo na Cozinha
+    function mixCake() {
+      document.getElementById('bowl').style.display = 'none';
+      document.getElementById('cake').style.display = 'block';
+      
+      document.getElementById('kitchen-dialog').innerText = "O bolo está pronto! ✨";
+
+      showAchievement("Bolo de leite ninho com maracuja...embora o de chocolate com maracuja seja melhor");
+
+      // Vai para a festa final
+      setTimeout(() => {
+        document.getElementById('kitchen-screen').style.display = 'none';
+        document.getElementById('party-screen').style.display = 'block';
+      }, 4000);
+    }
+
+    // Exibir Conquista Pixel
+    function showAchievement(text) {
+      const box = document.getElementById('achievement-box');
+      const textElem = document.getElementById('achievement-text');
+      
+      textElem.innerText = text;
+      box.style.display = 'block';
+
+      setTimeout(() => {
+        box.style.display = 'none';
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
